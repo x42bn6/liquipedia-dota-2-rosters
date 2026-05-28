@@ -3,12 +3,31 @@
  */
 package liquipedia.dota.rosters;
 
+import liquipedia.dota.rosters.scheduling.ApiScheduler;
+import liquipedia.dota.rosters.scheduling.Priority;
+import liquipedia.dota.rosters.scheduling.TaskWithPriority;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.PropertySources;
+import org.springframework.context.event.EventListener;
+
+import javax.annotation.PostConstruct;
+
+@SpringBootApplication
+@PropertySources({
+        @PropertySource("app.properties")
+})
 public class App {
-    public String getGreeting() {
-        return "Hello World!";
+    @Bean
+    public ApiScheduler faceitApiScheduler(@Value("${faceit.delay.time.seconds}") int delaySeconds) {
+        return new ApiScheduler(delaySeconds);
     }
 
     public static void main(String[] args) {
-        System.out.println(new App().getGreeting());
+        SpringApplication.run(App.class, args);
     }
 }
